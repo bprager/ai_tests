@@ -1,15 +1,25 @@
 #!/usr/bin/env python
 """Test the OpenAI GPT-3 API on the local server"""
 import asyncio
+import logging
+import time
 from typing import Optional, Dict
+from venv import logger
 from aiohttp import ClientSession
+from aiohttp.client_exceptions import ClientConnectorError
 import typer
 from rich.prompt import Prompt
 
 # Local configuration
-HOST_PORT = "192.168.1.124:1234"
+HOST_PORT = "fulla:1234"
 URL = f"http://{HOST_PORT}/v1/chat/completions/"
 TIMEOUT = 10
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s.%(msecs)03d - %(levelname)s %(name)s - %(funcName)s:%(lineno)d: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 
 
 async def post_async(url: str, data: Dict) -> Optional[Dict]:
@@ -19,8 +29,11 @@ async def post_async(url: str, data: Dict) -> Optional[Dict]:
             async with session.post(url, json=data, timeout=TIMEOUT) as response:
                 response.raise_for_status()
                 return await response.json()
-        except Exception as e:
-            print(f"Error: {e}")
+        except (
+            asyncio.TimeoutError,
+            ClientConnectorError,
+        ) as e:
+            logging.error("Server down?: %s", e)
             return None
 
 
@@ -48,8 +61,10 @@ async def main_async(prompt: str):
 
 def main():
     """Synchronous wrapper for the asynchronous main function."""
+    start_time = time.time()
     user_prompt = Prompt.ask("[green]How can I be of assistance?[/green]")
     asyncio.run(main_async(user_prompt))
+    logger.info("--- Elapsed time: %.2f seconds ---", time.time() - start_time)
 
 
 if __name__ == "__main__":

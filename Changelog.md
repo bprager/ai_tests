@@ -19,3 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changelog
 - Async client with _'aiohttp'_ library
 
+## [0.1.1] - Thu Feb  8 12:37:41 PST 2024
+
+### Changed
+
+- Logging
+- Exception handling
