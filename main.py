@@ -3,11 +3,12 @@
 import asyncio
 import logging
 import time
-from typing import Optional, Dict
+from typing import Dict, Optional
 from venv import logger
+
+import typer
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientConnectorError
-import typer
 from rich.prompt import Prompt
 
 # Local configuration
@@ -17,7 +18,7 @@ TIMEOUT = 10
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s.%(msecs)03d - %(levelname)s %(name)s - %(funcName)s:%(lineno)d: %(message)s",
+    format="%(asctime)s.%(msecs)03d %(levelname)s %(name)s - %(funcName)s:%(lineno)d: %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
