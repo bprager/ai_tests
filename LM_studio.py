@@ -6,15 +6,15 @@ import time
 from typing import Dict, Optional
 from venv import logger
 
+import aiohttp
 import typer
-from aiohttp import ClientSession
-from aiohttp.client_exceptions import ClientConnectorError
 from rich.prompt import Prompt
+from aiohttp.client_exceptions import ClientConnectorError
 
 # Local configuration
 HOST_PORT = "fulla:1234"
 URL = f"http://{HOST_PORT}/v1/chat/completions/"
-TIMEOUT = 10
+TIMEOUT = 60
 
 logging.basicConfig(
     level=logging.INFO,
@@ -25,16 +25,16 @@ logging.basicConfig(
 
 async def post_async(url: str, data: Dict) -> Optional[Dict]:
     """Asynchronously POST data to the specified URL and return the JSON response."""
-    async with ClientSession() as session:
+    async with aiohttp.ClientSession() as session:
         try:
-            async with session.post(url, json=data, timeout=TIMEOUT) as response:
-                response.raise_for_status()
-                return await response.json()
-        except (
-            asyncio.TimeoutError,
-            ClientConnectorError,
-        ) as e:
-            logging.error("Server down?: %s", e)
+            async with session.post(url, json=data, timeout=TIMEOUT) as resp:
+                resp.raise_for_status()
+                return await resp.json()
+        except asyncio.TimeoutError:
+            logging.error("Request exceeded timeout of %d seconds.", TIMEOUT)
+            return None
+        except ClientConnectorError as e:
+            logging.error("Can't reach service: %s", e)
             return None
 
 

@@ -25,3 +25,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Logging
 - Exception handling
+
+
+## [0.2.0] - Mon Feb 12 16:26:45 PST 2024
+
+### Changed
+
+- Specify file names for backend system
+
+### Added
+
+- Ollama version with retrieval of available models
+
