@@ -15,8 +15,8 @@ from rich.prompt import Prompt
 HOST_PORT = "fulla:11434"
 CHAT_URL = f"http://{HOST_PORT}/v1/chat/completions"
 MODELS_URL = f"http://{HOST_PORT}/api/tags"
-TIMEOUT = 60
-# Models preference list
+TIMEOUT = 600
+# Desired models
 MODELS = [
     "dolphin-mixtral:latest",
     "dolphin-phi:latest",
@@ -72,6 +72,7 @@ async def main_async(prompt: str):
     }
     available_models: list[str] = await fetch_models_async(MODELS_URL)
     logging.debug("available_models: %s", available_models)
+    # find first match
     model_used = next((m for m in MODELS if m in available_models), None)
     if model_used:
         data["model"] = f"{model_used}"

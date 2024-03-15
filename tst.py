@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 from openai import OpenAI
 
-HOST_PORT = "fulla:11434"
-base_url = f"http://{HOST_PORT}/v1/"  # point to the local server ! does not seem to be supported
-
 client = OpenAI(
-    api_key="ollama",
-    base_url=base_url,
-    timeout=60,
+    base_url='http://fulla:11434/v1/',
+
+    # required but ignored
+    api_key='',
 )
 
 chat_completion = client.chat.completions.create(
@@ -21,4 +19,3 @@ chat_completion = client.chat.completions.create(
 )
 
 print(chat_completion)
-
